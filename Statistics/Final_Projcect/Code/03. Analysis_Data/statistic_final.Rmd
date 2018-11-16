@@ -1,0 +1,129 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+data <- read.csv("C:\\Users\\wnsvy\\Documents\\R\\final_data.csv")
+str(data)
+head(data)
+```
+
+
+
+```{r}
+table(data$y_label)
+```
+
+
+
+```{r}
+library(sampling)
+```
+
+```{r}
+x <- strata(c("y_label"), size=c(100, 100), method="srswor", data=data)
+train = getdata(data,x)
+```
+
+
+
+```{r}
+## factor
+train$CLSS <-as.factor(train$CLSS)
+str(train)
+```
+
+```{r}
+model <- glm(y_label ~ SB_score + CLSS + SB_worker_score + PR_per_PY, data = train, family = "binomial")
+summary(model)
+```
+
+```{r}
+anova(model, test="Chisq")
+```
+
+```{r}
+### factor
+data$CLSS <-as.factor(data$CLSS)
+str(data)
+```
+
+
+```{r}
+library(ROCR)
+p <- predict(model, newdata=data, type="response")
+pr <- prediction(p, data$y_label)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+```
+
+```{r}
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+```
+
+#Using STD_NORMALIZED dataset
+
+```{r}
+data <- read.csv("C:\\Users\\wnsvy\\Documents\\R\\std_final_data.csv")
+str(data)
+head(data)
+```
+
+
+
+```{r}
+table(data$y_label)
+```
+
+
+
+```{r}
+library(sampling)
+```
+
+```{r}
+x <- strata(c("y_label"), size=c(100, 100), method="srswor", data=data)
+train = getdata(data,x)
+```
+
+
+
+```{r}
+## factor
+train$CLSS <-as.factor(train$CLSS)
+str(train)
+```
+
+```{r}
+model <- glm(y_label ~ SB_score + CLSS + SB_worker_score + PR_per_PY, data = train, family = "binomial")
+summary(model)
+```
+
+```{r}
+anova(model, test="Chisq")
+```
+
+```{r}
+### factor
+data$CLSS <-as.factor(data$CLSS)
+str(data)
+```
+
+
+```{r}
+library(ROCR)
+p <- predict(model, newdata=data, type="response")
+pr <- prediction(p, data$y_label)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+```
+
+```{r}
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+```
+
+
